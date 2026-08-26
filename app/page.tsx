@@ -9,7 +9,7 @@ import { TrajectoryMap } from "@/components/trajectoryMap";
 import { VESSEL_IDS, VesselId } from "@/domain";
 import { MapLegend } from "@/components/mapLegend";
 import { Button } from "@/components/ui/button";
-import { BadgeQuestionMark, Settings, Settings2 } from "lucide-react";
+import { BadgeQuestionMark, Settings2 } from "lucide-react";
 
 // Dataset spans roughly March-December 2026 per the CSVs — adjust these
 // defaults if your actual file range differs.
