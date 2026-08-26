@@ -1,4 +1,4 @@
-// GET /api/vessels?vessels=III,AAA&start=2026-03-01&end=2026-03-15
+// GET /api/vessels?vessels=IMO1,IMO2&start=2026-03-01&end=2026-03-15
 //
 // Returns merged GPS+MOTIONS+MACS3 rows for the requested vessels within the
 // given date range. All filtering happens server-side so the client never
@@ -7,19 +7,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getAllVesselRows } from "@/lib/csv/dataset";
-import { filterMergedRows, VesselId } from "@/lib/csv/parse-csv";
-
-const VESSEL_IDS = ["III", "AAA", "LLL"] as const;
+import { filterMergedRows } from "@/lib/csv/parse-csv";
+import { VESSEL_IDS, VesselId } from "@/domain";
 
 // Query params arrive as strings, so we validate+coerce here rather than
 // trusting the client. `vessels` is a comma-separated list in the URL
-// ("?vessels=III,AAA"), split before validation so each id is checked
+// ("?vessels=IMO1,IMO2"), split before validation so each id is checked
 // individually against the enum instead of validating the raw joined string.
 const QuerySchema = z
   .object({
     vessels: z
       .string()
-      .min(1, "vessels param is required, e.g. ?vessels=III,AAA")
+      .min(1, "vessels param is required, e.g. ?vessels=IMO1,IMO2")
       .transform((value) => value.split(",").map((v) => v.trim()))
       .pipe(
         z

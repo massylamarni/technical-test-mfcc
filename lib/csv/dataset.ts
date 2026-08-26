@@ -1,9 +1,13 @@
 import fs from "fs";
 import path from "path";
-import { loadVessel, MergedVesselRow, VesselId } from "./parse-csv";
+import { loadVessel, MergedVesselRow } from "./parse-csv";
+import {
+  FILE_TYPES,
+  VESSEL_FILENAME_MAP,
+  VESSEL_IDS,
+  VesselId,
+} from "@/domain";
 
-const VESSEL_IDS: VesselId[] = ["III", "AAA", "LLL"];
-const FILE_TYPES = ["GPS", "MACS3", "MOTIONS"] as const;
 type FileType = (typeof FILE_TYPES)[number];
 
 const FILENAME_PATTERN = /(III|AAA|LLL)\s+(GPS|MACS3|MOTIONS)\.csv$/i;
@@ -60,9 +64,10 @@ export function getAllVesselRows(
   const missing: string[] = [];
 
   for (const vesselId of VESSEL_IDS) {
+    const vesselFileName = VESSEL_FILENAME_MAP[vesselId as VesselId];
     const filesByType = {} as Record<FileType, FileIndexEntry | undefined>;
     for (const fileType of FILE_TYPES) {
-      filesByType[fileType] = fileIndex.get(`${vesselId}_${fileType}`);
+      filesByType[fileType] = fileIndex.get(`${vesselFileName}_${fileType}`);
     }
 
     const missingTypes = FILE_TYPES.filter(
@@ -70,7 +75,7 @@ export function getAllVesselRows(
     );
     if (missingTypes.length > 0) {
       missing.push(
-        ...missingTypes.map((fileType) => `${vesselId} ${fileType}`),
+        ...missingTypes.map((fileType) => `${vesselFileName} ${fileType}`),
       );
       continue;
     }
@@ -79,8 +84,7 @@ export function getAllVesselRows(
       fs.readFileSync(filesByType[fileType]!.fullPath, "utf-8");
 
     const [gpsText, macs3Text, motionsText] = FILE_TYPES.map(readText);
-    const rows = loadVessel(vesselId, gpsText, macs3Text, motionsText);
-    rows.push(...rows);
+    rows.push(...loadVessel(vesselId, gpsText, macs3Text, motionsText));
   }
 
   if (missing.length > 0) {

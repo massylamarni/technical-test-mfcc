@@ -1,6 +1,5 @@
+import { VesselId } from "@/domain";
 import Papa from "papaparse";
-
-export type VesselId = "III" | "AAA" | "LLL";
 
 // ---------- shared helpers ----------
 
@@ -394,6 +393,27 @@ export function loadVessel(
   const macs3 = parseMacs3Csv(macs3CsvText, vesselId);
   const motions = parseMotionsCsv(motionsCsvText, vesselId);
   return mergeVesselData(gps, motions, macs3);
+}
+
+/**
+ * Groups a flat merged dataset into one array per vessel — useful right before
+ * rendering (e.g. one trajectory line per vessel on the map), but NOT how the
+ * data should be stored/passed around otherwise: filtering, sorting, and
+ * scaling (e.g. min/max for a color gradient) are all simpler on the flat
+ * array, so group only at the point where a per-vessel shape is actually needed.
+ */
+export function groupRowsByVessel(
+  rows: MergedVesselRow[],
+): Record<VesselId, MergedVesselRow[]> {
+  const grouped: Record<VesselId, MergedVesselRow[]> = {
+    IMO1: [],
+    IMO2: [],
+    IMO3: [],
+  };
+  for (const row of rows) {
+    grouped[row.vesselId].push(row);
+  }
+  return grouped;
 }
 
 /** Filters a merged dataset by vessel subset and date range — used by your API route. */
