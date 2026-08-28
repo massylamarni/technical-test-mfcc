@@ -416,7 +416,7 @@ export function groupRowsByVessel(
   return grouped;
 }
 
-/** Filters a merged dataset by vessel subset and date range — used by your API route. */
+/** Filters a merged dataset by vessel subset and date range */
 export function filterMergedRows(
   rows: MergedVesselRow[],
   vesselIds: VesselId[],

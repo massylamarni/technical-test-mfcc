@@ -10,8 +10,6 @@ import { MapLegend } from "@/components/mapLegend";
 import { Button } from "@/components/ui/button";
 import { BadgeQuestionMark, Settings2 } from "lucide-react";
 
-// Dataset spans roughly March-December 2026 per the CSVs — adjust these
-// defaults if your actual file range differs.
 const DEFAULT_START = "2026-03-01";
 const DEFAULT_END = "2026-03-31";
 

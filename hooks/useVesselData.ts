@@ -18,9 +18,7 @@ interface UseVesselDataResult {
 
 /**
  * Fetches /api/vessels for the given vessel selection + date range, and
- * returns the result already grouped per vessel (via groupRowsByVessel) —
- * this is the "group right before rendering" boundary we agreed on earlier;
- * the flat array stays the API's shape, grouping happens on the client.
+ * returns the result already grouped per vessel (via groupRowsByVessel)
  */
 const EMPTY_ROWS: Record<VesselId, MergedVesselRow[]> = {
   IMO1: [],
@@ -34,8 +32,7 @@ export function useVesselData(
   endDate: Date | null,
 ): UseVesselDataResult {
   // Only ever holds data from a successful fetch — the "nothing selected /
-  // invalid range" case is handled below at render time (see rowsByVessel),
-  // not via setState, since it isn't synchronizing with anything external.
+  // invalid range" case is handled below at render time (see rowsByVessel)
   const [fetchedRows, setFetchedRows] =
     useState<Record<VesselId, MergedVesselRow[]>>(EMPTY_ROWS);
   const [isLoading, setIsLoading] = useState(false);
@@ -87,8 +84,7 @@ export function useVesselData(
   }, [isValidSelection, vesselIds, startDate, endDate]);
 
   // Derived at render time, not stored in state: if the current selection is
-  // invalid, show empty regardless of whatever was fetched previously — no
-  // effect/setState round-trip needed to represent that.
+  // invalid, show empty regardless of whatever was fetched previously
   const rowsByVessel = isValidSelection ? fetchedRows : EMPTY_ROWS;
 
   return { rowsByVessel, isLoading, error };

@@ -8,13 +8,10 @@ export interface ColorStop {
   color: [number, number, number]; // RGB
 }
 
-// Blue (low) -> Yellow (mid) -> Red (high). Colorblind-friendlier than a
-// pure red-green scale, and reads intuitively as "cool to hot" for
-// speed/risk-style variables.
 const DEFAULT_STOPS: ColorStop[] = [
-  { value: 0, color: [37, 99, 235] }, // blue-600
-  { value: 0.5, color: [234, 179, 8] }, // yellow-500
-  { value: 1, color: [220, 38, 38] }, // red-600
+  { value: 0, color: [37, 99, 235] },
+  { value: 0.5, color: [234, 179, 8] },
+  { value: 1, color: [220, 38, 38] },
 ];
 
 function lerp(a: number, b: number, t: number): number {

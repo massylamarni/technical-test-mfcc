@@ -1,6 +1,3 @@
-// Curated subset of MergedVesselRow's ~40 fields, shown as the selectable
-// "variable to visualize" options.
-
 import { MergedVesselRow } from "@/lib/csv/parse-csv";
 
 export interface VariableOption {

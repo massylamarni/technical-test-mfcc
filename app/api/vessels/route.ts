@@ -39,7 +39,10 @@ export async function GET(request: NextRequest) {
 
   if (!parsed.success) {
     return NextResponse.json(
-      { error: "Invalid query parameters", details: parsed.error.flatten() },
+      {
+        error: "Invalid query parameters",
+        details: z.treeifyError(parsed.error),
+      },
       { status: 400 },
     );
   }
