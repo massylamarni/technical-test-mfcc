@@ -1,17 +1,15 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { VARIABLE_OPTIONS, DEFAULT_VARIABLE_KEY } from "@/lib/variables";
+import { VARIABLE_OPTIONS, DEFAULT_VARIABLE_KEY } from "@/domain/variables";
 import { useVesselData } from "@/hooks/useVesselData";
 import { VesselControls } from "@/components/vesselControls";
 import { TrajectoryMap } from "@/components/trajectoryMap";
-import { VESSEL_IDS, VesselId } from "@/domain";
+import { DEFAULT_END, DEFAULT_START, VESSEL_IDS, VesselId } from "@/domain";
 import { MapLegend } from "@/components/mapLegend";
 import { Button } from "@/components/ui/button";
 import { BadgeQuestionMark, Settings2 } from "lucide-react";
-
-const DEFAULT_START = "2026-03-01";
-const DEFAULT_END = "2026-03-31";
+import MsgToast from "@/components/msgToast";
 
 export default function DashboardPage() {
   const [selectedVessels, setSelectedVessels] = useState<VesselId[]>([
@@ -50,16 +48,8 @@ export default function DashboardPage() {
   return (
     <div className="flex h-screen w-full">
       <main className="relative flex-1">
-        {isLoading && (
-          <div className="absolute left-1/2 top-4 z-10 -translate-x-1/2 rounded-md bg-white px-3 py-1.5 text-sm shadow-md">
-            Loading...
-          </div>
-        )}
-        {error && (
-          <div className="absolute left-1/2 top-4 z-10 -translate-x-1/2 rounded-md bg-red-50 px-3 py-1.5 text-sm text-red-700 shadow-md">
-            {error}
-          </div>
-        )}
+        {isLoading && <MsgToast msg="Loading..." />}
+        {error && <MsgToast msg={error} />}
         <div className="relative h-full w-full">
           {selectedVessels.length > 0 ? (
             <TrajectoryMap

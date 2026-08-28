@@ -1,6 +1,6 @@
 "use client";
 
-import { VARIABLE_OPTIONS, VariableOption } from "@/lib/variables";
+import { VARIABLE_OPTIONS, VariableOption } from "@/domain/variables";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import {
@@ -15,12 +15,13 @@ import {
   Card,
   CardAction,
   CardContent,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "./ui/button";
 import { ChevronDown } from "lucide-react";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 interface VesselControlsProps {
   selectedVessels: VesselId[];
@@ -35,23 +36,49 @@ interface VesselControlsProps {
 }
 
 export function VesselControls({
-  selectedVessels,
+  selectedVessels: initialSelectedVessels,
   onVesselsChange,
-  startDate,
-  endDate,
+  startDate: initialStartDate,
+  endDate: initialEndDate,
   onStartDateChange,
   onEndDateChange,
   selectedVariableKey,
   onVariableChange,
   setToggle,
 }: VesselControlsProps) {
-  function toggleVessel(vesselId: VesselId, checked: boolean) {
+  const [selectedVessels, setSelectedVessels] = useState<VesselId[]>(
+    initialSelectedVessels,
+  );
+  const [startDate, setStartDate] = useState(initialStartDate);
+  const [endDate, setEndDate] = useState(initialEndDate);
+  const [variableKey, setVariableKey] = useState(selectedVariableKey);
+
+  const invalidVesselVal = selectedVessels.length === 0;
+  const invalidDateVal = !!startDate && !!endDate && startDate > endDate;
+
+  const hasErrors = invalidVesselVal || invalidDateVal;
+
+  const hasChanges =
+    selectedVessels.length !== initialSelectedVessels.length ||
+    selectedVessels.some((v) => !initialSelectedVessels.includes(v)) ||
+    startDate !== initialStartDate ||
+    endDate !== initialEndDate ||
+    variableKey !== selectedVariableKey;
+
+  function handleVesselToggle(vesselId: VesselId, checked: boolean) {
     if (checked) {
-      onVesselsChange([...selectedVessels, vesselId]);
+      setSelectedVessels([...selectedVessels, vesselId]);
     } else {
-      onVesselsChange(selectedVessels.filter((v) => v !== vesselId));
+      setSelectedVessels(selectedVessels.filter((v) => v !== vesselId));
     }
   }
+
+  const handleSubmit = () => {
+    onVesselsChange(selectedVessels);
+    onStartDateChange(startDate);
+    onEndDateChange(endDate);
+    onVariableChange(variableKey);
+  };
 
   return (
     <Card className="flex flex-col">
@@ -79,7 +106,7 @@ export function VesselControls({
                     id={`vessel-${vesselId}`}
                     checked={selectedVessels.includes(vesselId)}
                     onCheckedChange={(checked) =>
-                      toggleVessel(vesselId, checked === true)
+                      handleVesselToggle(vesselId, checked === true)
                     }
                   />
                   <Label
@@ -91,7 +118,7 @@ export function VesselControls({
                 </div>
               ))}
             </div>
-            {selectedVessels.length === 0 && (
+            {invalidVesselVal && (
               <p className="text-xs text-red-500">Select at least one vessel</p>
             )}
           </div>
@@ -109,7 +136,7 @@ export function VesselControls({
                   id="start-date"
                   type="date"
                   value={startDate}
-                  onChange={(e) => onStartDateChange(e.target.value)}
+                  onChange={(e) => setStartDate(e.target.value)}
                   className="flex-1 rounded-md border border-input bg-background px-3 py-1.5 text-sm"
                 />
               </div>
@@ -124,12 +151,12 @@ export function VesselControls({
                   id="end-date"
                   type="date"
                   value={endDate}
-                  onChange={(e) => onEndDateChange(e.target.value)}
+                  onChange={(e) => setEndDate(e.target.value)}
                   className="flex-1 rounded-md border border-input bg-background px-3 py-1.5 text-sm"
                 />
               </div>
             </div>
-            {startDate && endDate && startDate > endDate && (
+            {invalidDateVal && (
               <p className="text-xs text-red-500">
                 Start date must be before end date
               </p>
@@ -140,7 +167,7 @@ export function VesselControls({
             <Select
               value={selectedVariableKey}
               onValueChange={(value) =>
-                onVariableChange(value as VariableOption["key"])
+                setVariableKey(value as VariableOption["key"])
               }
             >
               <SelectTrigger className="w-full">
@@ -158,6 +185,15 @@ export function VesselControls({
           </div>
         </div>
       </CardContent>
+      <CardFooter>
+        <Button
+          className="w-full"
+          onClick={handleSubmit}
+          disabled={!hasChanges || hasErrors}
+        >
+          Submit
+        </Button>
+      </CardFooter>
     </Card>
   );
 }

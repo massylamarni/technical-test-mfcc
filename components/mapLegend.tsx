@@ -2,7 +2,7 @@
 
 import { VESSEL_IDS, VesselId } from "@/domain";
 import { MergedVesselRow } from "@/lib/csv/parse-csv";
-import { VariableOption } from "@/lib/variables";
+import { VariableOption } from "@/domain/variables";
 import { Card, CardAction, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { getVesselColor } from "@/lib/map/color-scale";
 import { Button } from "./ui/button";

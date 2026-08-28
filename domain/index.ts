@@ -6,3 +6,5 @@ export const VESSEL_FILENAME_MAP = {
   IMO2: "AAA",
   IMO3: "LLL",
 };
+export const DEFAULT_START = "2026-01-01";
+export const DEFAULT_END = "2026-12-31";

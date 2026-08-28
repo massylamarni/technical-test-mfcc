@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import * as maplibregl from "maplibre-gl";
 import { MergedVesselRow } from "@/lib/csv/parse-csv";
-import { VariableOption } from "@/lib/variables";
+import { VariableOption } from "@/domain/variables";
 import { cumulativeDistanceFractions } from "@/lib/map/geo";
 import { VESSEL_IDS, VesselId } from "@/domain";
 import { getVesselColor } from "@/lib/map/color-scale";
