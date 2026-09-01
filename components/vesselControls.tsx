@@ -165,7 +165,7 @@ export function VesselControls({
           <div className="flex flex-col gap-2">
             <Label htmlFor="password">Color trajectory by</Label>
             <Select
-              value={selectedVariableKey}
+              value={variableKey}
               onValueChange={(value) =>
                 setVariableKey(value as VariableOption["key"])
               }
